@@ -62,12 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Check for saved theme preference
     checkThemePreference();
     
-    // Check if internal tab content should be shown based on login status
-    checkInternalTabAccess();
-    
-    // Update navigation based on login status
-    updateNavigation();
-    
     // Handle mobile menu toggle if needed
     const mobileBreakpoint = 768;
     
@@ -107,16 +101,6 @@ function initializeTabs() {
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             const target = tab.getAttribute('data-tab');
-            
-            // Check if internal tab and user is not logged in
-            if (target === 'internal') {
-                const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-                if (!currentUser.isLoggedIn) {
-                    // Show custom popup instead of alert
-                    showAuthPopup('Please login or signup to access the Internal Marks Calculator', 'login.html');
-                    return;
-                }
-            }
             
             // Remove active class from all tabs and contents
             tabs.forEach(t => t.classList.remove('active'));
@@ -771,67 +755,6 @@ style.textContent = `
 }
 `;
 document.head.appendChild(style);
-
-// Function to check if internal tab should be accessible
-function checkInternalTabAccess() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const internalTab = document.querySelector('[data-tab="internal"]');
-    
-    if (internalTab) {
-        // If an internal tab is active but user is not logged in, switch to SGPA tab
-        if (!currentUser.isLoggedIn && internalTab.classList.contains('active')) {
-            // Find and click the SGPA tab
-            const sgpaTab = document.querySelector('[data-tab="sgpa"]');
-            if (sgpaTab) {
-                sgpaTab.click();
-            }
-        }
-    }
-}
-
-// Function to update navigation based on login status
-function updateNavigation() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
-    const navLinksContainer = document.querySelector('.nav-links');
-    const heroButtons = document.querySelector('.hero-buttons');
-    
-    if (currentUser.isLoggedIn) {
-        // User is logged in, update navigation
-        if (navLinksContainer) {
-            const loginLink = navLinksContainer.querySelector('a[href="login.html"]');
-            if (loginLink) {
-                const listItem = loginLink.parentElement;
-                listItem.innerHTML = `
-                    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                `;
-            }
-        }
-        
-        // Update hero buttons if they exist
-        if (heroButtons) {
-            const signInButton = heroButtons.querySelector('a.hero-button.secondary');
-            if (signInButton) {
-                signInButton.innerHTML = `<i class="fas fa-user"></i> My Account`;
-                signInButton.href = "#";
-                signInButton.onclick = function() {
-                    alert(`Welcome ${currentUser.fullname}!`);
-                    return false;
-                };
-            }
-        }
-    }
-}
-
-// Logout function
-function logout() {
-    // Remove the current user from localStorage
-    localStorage.removeItem('currentUser');
-    
-    // Redirect to home page
-    window.location.href = 'index.html';
-    
-    return false;
-}
 
 // Function to update the hybrid form based on department and year selection
 function updateHybridForm() {
