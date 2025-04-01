@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CUgrades - CGPA & SGPA Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay">
+        <div class="loading-logo">
+            <div class="logo-circle"></div>
+            <div class="logo-icon">CU</div>
+            <div class="logo-text"></div>
+        </div>
+        <div class="loading-message">Loading...</div>
+        <div class="loading-progress"></div>
+    </div>
+    
+    <header>
+        <nav class="navbar">
+            <a href="#" class="logo">
+                <div class="logo-icon"></div>
+                <span class="logo-text"></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#calculator-section" onclick="scrollToCalculator(); return false;"><i class="fas fa-calculator"></i> Calculators</a></li>
+                <li><button id="theme-toggle" class="theme-toggle" onclick="toggleDarkMode()">
+                    <i class="fas fa-moon"></i>
+                </button></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Calculate Your Academic Success</h1>
+            <p class="hero-subtitle">The ultimate tool for students to calculate SGPA, CGPA, and internal marks with ease. Track your progress and achieve your academic goals.</p>
+            <div class="hero-buttons">
+                <button onclick="scrollToCalculator(); return false;" class="hero-button primary" >
+                    <i class="fas fa-arrow-right"></i> Get Started
+                </button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://img.icons8.com/fluency/240/000000/graduation-cap.png" alt="Graduation Cap">
+        </div>
+    </div>
+
+    <div class="container" id="calculator-section">
+        <div class="tab-container">
+            <div class="tabs">
+                <div class="tab active" data-tab="sgpa">
+                    <i class="fas fa-calculator"></i>
+                    SGPA Calculator
+                </div>
+                <div class="tab" data-tab="cgpa">
+                    <i class="fas fa-chart-line"></i>
+                    CGPA Calculator
+                </div>
+                <div class="tab" data-tab="internal">
+                    <i class="fas fa-clipboard-check"></i>
+                    Internal Marks
+                </div>
+            </div>
+            
+            <!-- SGPA Calculator Tab -->
+            <div class="tab-content active" id="sgpa-tab">
+                <h1><i class="fas fa-calculator"></i> SGPA Calculator</h1>
+                <form id="calculator-form">
+                    <div id="subjects-container">
+                        <!-- Subjects will be dynamically added here -->
+                    </div>
+                    <div class="button-group">
+                        <button type="button" onclick="addSubject()" class="add-button">
+                            <i class="fas fa-plus"></i> Add Subject
+                        </button>
+                        <button type="button" onclick="calculateSGPA()" class="calculate-button">
+                            <i class="fas fa-calculator"></i> Calculate SGPA
+                        </button>
+                        <button type="button" class="secondary" onclick="clearAllSubjects()">
+                            <i class="fas fa-trash"></i> Clear All
+                        </button>
+                    </div>
+                </form>
+                <div id="result" class="result-card"></div>
+            </div>
+            
+            <!-- CGPA Calculator Tab -->
+            <div class="tab-content" id="cgpa-tab">
+                <h1><i class="fas fa-chart-line"></i> CGPA Calculator</h1>
+                <form id="cgpa-form">
+                    <div class="form-group">
+                        <label for="year">Select Year:</label>
+                        <select id="year" onchange="updateSemesterInputs()">
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                    <div id="semester-inputs">
+                        <!-- Semester inputs will be dynamically added here -->
+                    </div>
+                    <div class="button-group">
+                        <button type="button" onclick="calculateCGPA()" class="calculate-button">
+                            <i class="fas fa-calculator"></i> Calculate CGPA
+                        </button>
+                        <button type="button" class="secondary" onclick="clearAllSemesters()">
+                            <i class="fas fa-trash"></i> Clear All
+                        </button>
+                    </div>
+                </form>
+                <div id="cgpa-result" class="result-card"></div>
+            </div>
+            
+            <!-- Internal Marks Calculator Tab -->
+            <div class="tab-content" id="internal-tab">
+                <h1><i class="fas fa-clipboard-check"></i> Internal Marks Calculator</h1>
+                
+                <div class="internal-tabs">
+                    <div class="tab active" data-internal-tab="hybrid">
+                        <i class="fas fa-flask"></i> Hybrid Subjects
+                    </div>
+                    <div class="tab" data-internal-tab="theory">
+                        <i class="fas fa-book"></i> Theory Subjects
+                    </div>
+                    <div class="tab" data-internal-tab="practical">
+                        <i class="fas fa-laptop-code"></i> Practical Subjects
+                    </div>
+                </div>
+                
+                <!-- Hybrid Subjects Calculator -->
+                <div class="internal-tab-content active" id="hybrid-tab">
+                    <div class="card">
+                        <form id="hybrid-form">
+                            <div class="input-row">
+                                <div class="form-group">
+                                    <label for="hybrid-department">Department:</label>
+                                    <select id="hybrid-department">
+                                        <option value="CSE">BE CSE</option>
+                                        <option value="AIML">AIT CSE</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hybrid-year">Year:</label>
+                                    <select id="hybrid-year">
+                                        <option value="1">1st Year</option>
+                                        <option value="2">2nd Year</option>
+                                        <option value="3">3rd Year</option>
+                                        <option value="4">4th Year</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hybrid-semester">Semester:</label>
+                                    <select id="hybrid-semester">
+                                        <option value="1">1st Semester</option>
+                                        <option value="2">2nd Semester</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- BE CSE 2nd+ year components -->
+                            <div id="be-cse-components" style="display:none;">
+                                <div class="card">
+                                    <h3><i class="fas fa-tasks"></i> Assignment & Attendance</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="assignment">Assignment Marks (out of 10):</label>
+                                            <input type="number" id="assignment" placeholder="Enter marks" min="0" max="10">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="attendance">Attendance Marks (out of 2):</label>
+                                            <input type="number" id="attendance" placeholder="Enter marks" min="0" max="2">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <h3><i class="fas fa-book"></i> Tests & Quizzes</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="surprise-test">Surprise Test Marks (out of 12):</label>
+                                            <input type="number" id="surprise-test" placeholder="Enter marks" min="0" max="12">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="quiz">Quiz Marks (out of 4):</label>
+                                            <input type="number" id="quiz" placeholder="Enter marks" min="0" max="4">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <h3><i class="fas fa-clipboard-check"></i> Mid-Semester Tests</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="mst1">MST 1 Marks (out of 20):</label>
+                                            <input type="number" id="mst1" placeholder="Enter marks" min="0" max="20">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="mst2">MST 2 Marks (out of 20):</label>
+                                            <input type="number" id="mst2" placeholder="Enter marks" min="0" max="20">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <h3><i class="fas fa-flask"></i> End Semester Practical</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="end-sem">End Semester Practical Marks (out of 40):</label>
+                                            <input type="number" id="end-sem" placeholder="Enter marks" min="0" max="40">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <h3><i class="fas fa-clipboard-check"></i> Worksheets</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="worksheet1">Worksheet 1 Marks (out of 30):</label>
+                                            <input type="number" id="worksheet1" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="worksheet2">Worksheet 2 Marks (out of 30):</label>
+                                            <input type="number" id="worksheet2" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                    </div>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="worksheet3">Worksheet 3 Marks (out of 30):</label>
+                                            <input type="number" id="worksheet3" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="worksheet4">Worksheet 4 Marks (out of 30):</label>
+                                            <input type="number" id="worksheet4" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <h3><i class="fas fa-star"></i> Performance & Projects</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="class-performance">Class Performance Marks (out of 10):</label>
+                                            <input type="number" id="class-performance" placeholder="Enter marks" min="0" max="10">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="course-project">Course Project Marks (out of 10):</label>
+                                            <input type="number" id="course-project" placeholder="Enter marks" min="0" max="10">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- CSE AIML 2nd+ year components -->
+                            <div id="cse-aiml-components" style="display:none;">
+                                <div class="card">
+                                    <h3><i class="fas fa-tasks"></i> Assignment & Attendance</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="aiml-assignment">Assignment Marks (out of 12):</label>
+                                            <input type="number" id="aiml-assignment" placeholder="Enter marks" min="0" max="12">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="aiml-attendance">Attendance Marks:</label>
+                                            <input type="number" id="aiml-attendance" placeholder="Enter marks" min="0" max="10">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <h3><i class="fas fa-clipboard-check"></i> Mid-Semester Tests</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="aiml-mst1">MST 1 Marks:</label>
+                                            <input type="number" id="aiml-mst1" placeholder="Enter marks" min="0" max="20">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="aiml-mst2">MST 2 Marks:</label>
+                                            <input type="number" id="aiml-mst2" placeholder="Enter marks" min="0" max="20">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <h3><i class="fas fa-book"></i> Tests & Quizzes</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="aiml-surprise-test">Surprise Test Marks (out of 12):</label>
+                                            <input type="number" id="aiml-surprise-test" placeholder="Enter marks" min="0" max="12">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="aiml-quiz">Quiz Marks (out of 4):</label>
+                                            <input type="number" id="aiml-quiz" placeholder="Enter marks" min="0" max="4">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <h3><i class="fas fa-flask"></i> Lab Components</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="aiml-end-sem">End Sem Practical Marks (out of 40):</label>
+                                            <input type="number" id="aiml-end-sem" placeholder="Enter marks" min="0" max="40">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="aiml-lab-mst">Lab MST Marks (out of 15):</label>
+                                            <input type="number" id="aiml-lab-mst" placeholder="Enter marks" min="0" max="15">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <h3><i class="fas fa-flask"></i> Experiments (each out of 30)</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="exp1">Experiment 1:</label>
+                                            <input type="number" id="exp1" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exp2">Experiment 2:</label>
+                                            <input type="number" id="exp2" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                    </div>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="exp3">Experiment 3:</label>
+                                            <input type="number" id="exp3" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exp4">Experiment 4:</label>
+                                            <input type="number" id="exp4" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                    </div>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="exp5">Experiment 5:</label>
+                                            <input type="number" id="exp5" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exp6">Experiment 6:</label>
+                                            <input type="number" id="exp6" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                    </div>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="exp7">Experiment 7:</label>
+                                            <input type="number" id="exp7" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exp8">Experiment 8:</label>
+                                            <input type="number" id="exp8" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                    </div>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="exp9">Experiment 9:</label>
+                                            <input type="number" id="exp9" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exp10">Experiment 10:</label>
+                                            <input type="number" id="exp10" placeholder="Enter marks" min="0" max="30">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Default components (for 1st year or other departments) -->
+                            <div id="default-components">
+                                <div class="card">
+                                    <h3><i class="fas fa-tasks"></i> Assignment & Attendance</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="assignment">Assignment Marks (out of 12):</label>
+                                            <input type="number" id="assignment" placeholder="Enter marks" min="0" max="12">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="attendance">Attendance Marks:</label>
+                                            <input type="number" id="attendance" placeholder="Enter marks" min="0" max="10">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <h3><i class="fas fa-book"></i> Case Study & MST</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="case-study">Case Study Marks (out of 16):</label>
+                                            <input type="number" id="case-study" placeholder="Enter marks" min="0" max="16">
+                                        </div>
+                                    </div>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="mst1">MST 1 Marks:</label>
+                                            <input type="number" id="mst1" placeholder="Enter marks" min="0" max="20">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="mst2">MST 2 Marks:</label>
+                                            <input type="number" id="mst2" placeholder="Enter marks" min="0" max="20">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <h3><i class="fas fa-flask"></i> Lab Components</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="end-sem">End Sem Practical Marks (out of 40):</label>
+                                            <input type="number" id="end-sem" placeholder="Enter marks" min="0" max="40">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="lab-mst">Lab MST Marks (out of 15):</label>
+                                            <input type="number" id="lab-mst" placeholder="Enter marks" min="0" max="15">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="card">
+                                    <h3><i class="fas fa-clipboard-check"></i> Assessments</h3>
+                                    <div class="input-row">
+                                        <div class="form-group">
+                                            <label for="assessment1">Assessment 1 Marks (out of 15):</label>
+                                            <input type="number" id="assessment1" placeholder="Enter marks" min="0" max="15">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="assessment2">Assessment 2 Marks (out of 15):</label>
+                                            <input type="number" id="assessment2" placeholder="Enter marks" min="0" max="15">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="assessment3">Assessment 3 Marks (out of 15):</label>
+                                            <input type="number" id="assessment3" placeholder="Enter marks" min="0" max="15">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="button-group">
+                                <button type="button" onclick="calculateHybridMarks()" class="calculate-button">
+                                    <i class="fas fa-calculator"></i> Calculate Internal Marks
+                                </button>
+                                <button type="button" class="secondary" onclick="resetHybridForm()">
+                                    <i class="fas fa-redo"></i> Reset
+                                </button>
+                            </div>
+                        </form>
+                        <div id="hybrid-result" class="result-card"></div>
+                    </div>
+                </div>
+                
+                <!-- Theory Subjects Calculator -->
+                <div class="internal-tab-content" id="theory-tab">
+                    <div class="card">
+                        <form id="theory-form">
+                            <div class="input-row">
+                                <div class="form-group">
+                                    <label for="theory-department">Department:</label>
+                                    <select id="theory-department">
+                                        <option value="CSE">BE CSE</option>
+                                        <option value="AIML">AIT CSE</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="theory-year">Year:</label>
+                                    <select id="theory-year">
+                                        <option value="1">1st Year</option>
+                                        <option value="2">2nd Year</option>
+                                        <option value="3">3rd Year</option>
+                                        <option value="4">4th Year</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="theory-semester">Semester:</label>
+                                    <select id="theory-semester">
+                                        <option value="1">1st Semester</option>
+                                        <option value="2">2nd Semester</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <h3><i class="fas fa-tasks"></i> Theory Subject Components</h3>
+                                <div class="input-row">
+                                    <div class="form-group">
+                                        <label for="theory-assignment">Assignment Marks:</label>
+                                        <input type="number" id="theory-assignment" placeholder="Enter marks" min="0" max="10">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="theory-attendance">Attendance Marks:</label>
+                                        <input type="number" id="theory-attendance" placeholder="Enter marks" min="0" max="10">
+                                    </div>
+                                </div>
+                                
+                                <div class="input-row">
+                                    <div class="form-group">
+                                        <label for="theory-surprise-test">Surprise Test Marks (out of 12):</label>
+                                        <input type="number" id="theory-surprise-test" placeholder="Enter marks" min="0" max="12">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="theory-quiz">Quiz Marks:</label>
+                                        <input type="number" id="theory-quiz" placeholder="Enter marks" min="0" max="4">
+                                    </div>
+                                </div>
+                                
+                                <div class="input-row">
+                                    <div class="form-group">
+                                        <label for="theory-mst1">MST 1 Marks:</label>
+                                        <input type="number" id="theory-mst1" placeholder="Enter marks" min="0" max="20">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="theory-mst2">MST 2 Marks:</label>
+                                        <input type="number" id="theory-mst2" placeholder="Enter marks" min="0" max="20">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="button-group">
+                                <button type="button" onclick="calculateTheoryMarks()" class="calculate-button">
+                                    <i class="fas fa-calculator"></i> Calculate Internal Marks
+                                </button>
+                                <button type="button" class="secondary" onclick="resetTheoryForm()">
+                                    <i class="fas fa-redo"></i> Reset
+                                </button>
+                            </div>
+                        </form>
+                        <div id="theory-result" class="result-card"></div>
+                    </div>
+                </div>
+                
+                <!-- Practical Subjects Calculator -->
+                <div class="internal-tab-content" id="practical-tab">
+                    <div class="card">
+                        <form id="practical-form">
+                            <div class="input-row">
+                                <div class="form-group">
+                                    <label for="practical-department">Department:</label>
+                                    <select id="practical-department">
+                                        <option value="CSE">BE CSE</option>
+                                        <option value="AIML">AIT CSE</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="practical-year">Year:</label>
+                                    <select id="practical-year">
+                                        <option value="1">1st Year</option>
+                                        <option value="2">2nd Year</option>
+                                        <option value="3">3rd Year</option>
+                                        <option value="4">4th Year</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="practical-semester">Semester:</label>
+                                    <select id="practical-semester">
+                                        <option value="1">1st Semester</option>
+                                        <option value="2">2nd Semester</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <h3><i class="fas fa-flask"></i> Practical Subject Components</h3>
+                                <div class="input-row">
+                                    <div class="form-group">
+                                        <label for="practical-lab-mst">Lab MST Marks (out of 15):</label>
+                                        <input type="number" id="practical-lab-mst" placeholder="Enter marks" min="0" max="15">
+                                    </div>
+                                </div>
+                                
+                                <div class="input-row">
+                                    <div class="form-group">
+                                        <label for="practical-assessment1">Assessment 1 Marks:</label>
+                                        <input type="number" id="practical-assessment1" placeholder="Enter marks">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="practical-assessment2">Assessment 2 Marks:</label>
+                                        <input type="number" id="practical-assessment2" placeholder="Enter marks">
+                                    </div>
+                                </div>
+                                
+                                <div class="input-row">
+                                    <div class="form-group">
+                                        <label for="practical-assessment3">Assessment 3 Marks:</label>
+                                        <input type="number" id="practical-assessment3" placeholder="Enter marks">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="practical-end-sem">End Sem Practical Marks:</label>
+                                        <input type="number" id="practical-end-sem" placeholder="Enter marks">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="button-group">
+                                <button type="button" onclick="calculatePracticalMarks()" class="calculate-button">
+                                    <i class="fas fa-calculator"></i> Calculate Internal Marks
+                                </button>
+                                <button type="button" class="secondary" onclick="resetPracticalForm()">
+                                    <i class="fas fa-redo"></i> Reset
+                                </button>
+                            </div>
+                        </form>
+                        <div id="practical-result" class="result-card"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="features-section">
+        <h2>Why Choose CUgrades?</h2>
+        <div class="features-container">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-tachometer-alt"></i></div>
+                <h3>Fast & Easy</h3>
+                <p>Calculate your SGPA and CGPA in seconds with our intuitive interface.</p>
+            </div>
+            <!-- <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-mobile-alt"></i></div>
+                <h3>Mobile Friendly</h3>
+                <p>Access CUgrades on any device - desktop, tablet, or mobile.</p>
+            </div> -->
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>Secure</h3>
+                <p>Your data is safe and secure with our privacy-focused approach.</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <a href="#" class="logo">
+                    <div class="logo-icon"></div>
+                    <span class="logo-text"></span>
+                </a>
+                <p>The ultimate CGPA & SGPA calculator for students.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#calculator-section" onclick="scrollToCalculator(); return false;"><i class="fas fa-calculator"></i> Calculators</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="mailto:suhanisonal3@gmail.com"><i class="fas fa-envelope"></i> suhanisonal3@gmail.com</a></li>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                        <li><a href="#"><i class="fas fa-headset"></i> Help Center</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 CUgrades - CGPA & SGPA Calculator. All rights reserved.</p>
+        </div>
+    </footer>
+    
+    <script src="script.js"></script>
+    <script>
+        // Loading screen functions
+        function showLoadingWithIcon(pageType) {
+            const loadingOverlay = document.querySelector('.loading-overlay');
+            const loadingIcon = document.querySelector('.loading-logo .logo-icon');
+            const loadingText = document.querySelector('.loading-logo .logo-text');
+            const loadingMessage = document.querySelector('.loading-message');
+            
+            // Set custom icon and text based on page type
+            if (pageType === 'calculator') {
+                loadingIcon.innerHTML = '<i class="fas fa-calculator"></i>';
+                loadingMessage.textContent = 'Loading Calculator...';
+            } else if (pageType === 'login') {
+                loadingIcon.innerHTML = '<i class="fas fa-user"></i>';
+                loadingMessage.textContent = 'Loading Login Page...';
+            } else if (pageType === 'signup') {
+                loadingIcon.innerHTML = '<i class="fas fa-user-plus"></i>';
+                loadingMessage.textContent = 'Loading Signup Page...';
+            } else {
+                loadingIcon.innerHTML = '<i class="fas fa-graduation-cap"></i>';
+                loadingMessage.textContent = 'Loading...';
+            }
+            
+            // Show loading overlay
+            loadingOverlay.classList.add('active');
+            
+            // Prevent immediate navigation for links
+            if (event && event.target.tagName === 'A') {
+                event.preventDefault();
+                
+                // Navigate after a delay
+                setTimeout(() => {
+                    window.location.href = event.target.href;
+                }, 1000); // Reduced loading time
+            }
+        }
+        
+        // Show loading overlay on initial page load
+        const loadingOverlay = document.querySelector('.loading-overlay');
+        if (loadingOverlay) {
+            loadingOverlay.classList.add('active');
+        }
+        
+        // Hide loading screen when page is fully loaded
+        window.addEventListener('load', function() {
+            const loadingOverlay = document.querySelector('.loading-overlay');
+            if (loadingOverlay) {
+                setTimeout(function() {
+                    loadingOverlay.classList.remove('active');
+                    console.log("Loading overlay hidden");
+                }, 800);
+            }
+        });
+
+        // Fallback: Make sure loading overlay is hidden after 3 seconds
+        setTimeout(function() {
+            const loadingOverlay = document.querySelector('.loading-overlay');
+            if (loadingOverlay && loadingOverlay.classList.contains('active')) {
+                loadingOverlay.classList.remove('active');
+                console.log("Fallback: Loading overlay hidden");
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
